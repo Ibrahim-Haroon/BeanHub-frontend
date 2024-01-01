@@ -1,38 +1,35 @@
-.App {
-  text-align: center;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'PT Sans', sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.features {
+  
+  background-position: center;
+  background-size: fill;
+  background-repeat: no-repeat;
+  color: black;
+  font-size: 100px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.aboutus {
+  background: url('./components/images/logo.png');
+  background-position: center;
+  background-size: cover;  /* Use 'cover' to make the image cover the whole container */
+  background-repeat: no-repeat;
+  color: black;
+  font-size: 100px;
+  height: 100vh;  /* Set height to 100% of the viewport height */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.trybeanhub {
+  background-position: center;
+  background-size: cover;  /* Use 'cover' to make the image cover the whole container */
+  background-repeat: no-repeat;
+  color: black;
+  font-size: 100px;
+  height: 100vh;  /* Set height to 100% of the viewport height */
 }
