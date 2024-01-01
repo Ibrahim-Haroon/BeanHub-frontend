@@ -4,7 +4,7 @@ import './Order.css';
 
 const Order = () => {
   return (
-    <div className="order-container">
+    <div className="order-container" data-testid="order">
       <div className="order-card">
         <div className="order-header">
           <h2>Your Order</h2>
