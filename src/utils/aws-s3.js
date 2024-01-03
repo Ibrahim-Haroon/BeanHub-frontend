@@ -1,5 +1,5 @@
-// s3.js
 import AWS from 'aws-sdk';
+
 
 export const uploadToS3 = async (file) => {
     AWS.config.update({
@@ -9,9 +9,10 @@ export const uploadToS3 = async (file) => {
     });
 
     const s3 = new AWS.S3();
+    const fileName = `customer_order_${Date.now()}.wav`;
     const params = {
         Bucket: process.env.REACT_APP_S3_BUCKET,
-        Key: 'customer_order.wav', // a unique file name
+        Key: fileName, // a unique file name
         Body: file,
         ContentType: 'audio/wav',
     };
