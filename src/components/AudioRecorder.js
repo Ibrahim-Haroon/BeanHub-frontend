@@ -1,23 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
+import MicIcon from "./MicIcon";
 import toWav from 'audiobuffer-to-wav';
+import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/aws-s3';
+import { fetchProcessedAudio } from '../utils/endpoint_api';
 
 const mimeType = "audio/webm";
 
-
 const AudioRecorder = ({ onAudioRecorded }) => {
     const [recordingStatus, setRecordingStatus] = useState("inactive");
-    const [audioUrl, setAudioUrl] = useState("");
     const mediaRecorder = useRef(null);
     const localAudioChunks = useRef([]);
-    const mediaStream = useRef(null); // Ensure this is declared as useRef
+    const mediaStream = useRef(null);
+    const audioContext = useRef(new AudioContext());
+    const [audioBuffer, setAudioBuffer] = useState(null);
 
     useEffect(() => {
-        // Pre-initialize the media stream
         async function initMediaStream() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaStream.current = stream; // Assign stream to mediaStream.current
-                mediaRecorder.current = new MediaRecorder(stream, { type: mimeType });
+                mediaStream.current = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder.current = new MediaRecorder(mediaStream.current, { type: mimeType });
             } catch (err) {
                 console.error("Error accessing the microphone", err);
             }
@@ -25,13 +26,27 @@ const AudioRecorder = ({ onAudioRecorded }) => {
 
         initMediaStream();
 
-        // Cleanup function to stop the media stream when the component is unmounted
         return () => {
-            if (mediaStream.current) {
-                mediaStream.current.getTracks().forEach(track => track.stop());
-            }
+            mediaStream.current?.getTracks().forEach(track => track.stop());
         };
     }, []);
+
+    useEffect(() => {
+        const playback = () => {
+            if (audioBuffer) {
+                const playSound = audioContext.current.createBufferSource();
+                playSound.buffer = audioBuffer;
+                playSound.connect(audioContext.current.destination);
+                playSound.start(audioContext.current.currentTime);
+            }
+        };
+
+        window.addEventListener("mousemove", playback);
+
+        return () => {
+            window.removeEventListener("playbackEvent", playback);
+        };
+    }, [audioBuffer]);
 
     const startRecording = () => {
         setRecordingStatus("recording");
@@ -61,30 +76,41 @@ const AudioRecorder = ({ onAudioRecorded }) => {
     const convertToWav = async (audioUrl) => {
         const response = await fetch(audioUrl);
         const audioBuffer = await response.arrayBuffer();
-        const audioCtx = new AudioContext();
-        await audioCtx.decodeAudioData(audioBuffer, (buffer) => {
-            const wav = toWav(buffer);
-            const blob = new Blob([new DataView(wav)], {type: 'audio/wav'});
-            const url = URL.createObjectURL(blob);
-            setAudioUrl(url);
-            // Notify parent with WAV URL if necessary
-            // onAudioRecorded(url);
-        }, (e) => {
-            console.log('Audio decoding failed', e);
-        });
+        const wavBlob = new Blob([new DataView(audioBuffer)], { type: 'audio/wav' });
+        await uploadToS3(wavBlob);
+        await handleProcessedAudio();
+    };
+
+    const handleProcessedAudio = async () => {
+        const response = await fetchProcessedAudio();
+        if (response && response.file) {
+            const tempFilePath = await saveFromS3(response.file);
+            fetchAndPlayAudio(tempFilePath);
+            await deleteTempFile(tempFilePath);
+            await deleteFromS3(response.file);
+        }
+    };
+
+    const fetchAndPlayAudio = (filePath) => {
+        fetch(filePath)
+            .then(data => data.arrayBuffer())
+            .then(arrayBuffer => audioContext.current.decodeAudioData(arrayBuffer))
+            .then(decodedAudio => {
+                setAudioBuffer(decodedAudio);
+                const event = new Event('playbackEvent');
+                window.dispatchEvent(event);
+            });
     };
 
     return (
         <div>
+            <MicIcon recording={recordingStatus === "recording"}/>
             <button onClick={startRecording} disabled={recordingStatus === "recording"}>
                 Start Recording
             </button>
             <button onClick={stopRecording} disabled={recordingStatus !== "recording"}>
                 Stop Recording
             </button>
-            {audioUrl && (
-                <audio src={audioUrl} controls="controls" />
-            )}
         </div>
     );
 };

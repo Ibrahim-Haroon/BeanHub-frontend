@@ -15,7 +15,6 @@ function App() {
 
     return (
         <div className="App">
-            <MicIcon recording={isRecording} />
             <AudioRecorder onAudioRecorded={handleAudioRecorded} />
         </div>
     );
