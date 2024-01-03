@@ -19,9 +19,10 @@ export const uploadToS3 = async (file) => {
 
     try {
         await s3.upload(params).promise();
-        console.log('File uploaded successfully');
+        return true
     } catch (error) {
         console.error(error);
+        return false
     }
 };
 
@@ -59,17 +60,17 @@ export const saveFromS3 = async (fileKey) => {
     const s3 = new AWS.S3();
 
     try {
-        const tempFilePath = path.join(os.tmpdir(), `tempfile_${Date.now()}.wav`);
-
         const params = {
             Bucket: process.env.REACT_APP_S3_BUCKET,
             Key: fileKey,
         };
         const data = await s3.getObject(params).promise();
 
-        await fs.promises.writeFile(tempFilePath, data.Body);
+        // Create a Blob from the data
+        const blob = new Blob([data.Body], { type: 'audio/wav' });
 
-        return tempFilePath;
+        // Create a URL for the Blob
+        return URL.createObjectURL(blob);
     } catch (error) {
         console.error('Error handling the .wav file:', error);
     }
@@ -78,7 +79,7 @@ export const saveFromS3 = async (fileKey) => {
 
 export const deleteTempFile = async (filePath) => {
     try {
-        await fs.promises.unlink(filePath);
+        URL.revokeObjectURL(filePath);
         console.log('Temporary file deleted successfully');
     } catch (error) {
         console.error('Error deleting the temporary file:', error);
