@@ -1,4 +1,4 @@
-import './AudioPlayer.css';
+import '../styles/AudioPlayer.css';
 import React, { useState, useEffect } from 'react';
 import { fetchProcessedAudio } from '../utils/endpoint_api';
 

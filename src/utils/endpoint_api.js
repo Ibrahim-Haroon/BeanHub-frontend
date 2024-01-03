@@ -1,12 +1,22 @@
-// api.js
+
+
 export const fetchProcessedAudio = async () => {
     try {
         const response = await fetch('http://127.0.0.1:8000');
-        if (!response.ok) throw new Error('Network response was not ok');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new TypeError("Oops, we haven't got JSON!");
+        }
         const data = await response.json();
-        console.log('Price:', data.floating_point_number);
+        if (data.floating_point_number !== undefined) {
+            console.log('Price:', data.floating_point_number);
+        }
         return data;
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
+        return "error"
     }
 };

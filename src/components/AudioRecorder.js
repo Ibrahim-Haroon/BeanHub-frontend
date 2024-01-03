@@ -1,42 +1,56 @@
-import React, { useState, useRef } from 'react';
-import PlaybackCircle from "./PlaybackCircle";
-import WaveformBars from "./WaveformBars";
+import React, { useState, useEffect, useRef } from 'react';
+import toWav from 'audiobuffer-to-wav';
 
 const mimeType = "audio/webm";
+
 
 const AudioRecorder = ({ onAudioRecorded }) => {
     const [recordingStatus, setRecordingStatus] = useState("inactive");
     const [audioUrl, setAudioUrl] = useState("");
     const mediaRecorder = useRef(null);
-    const [audioChunks, setAudioChunks] = useState([]);
+    const localAudioChunks = useRef([]);
+    const mediaStream = useRef(null); // Ensure this is declared as useRef
 
-    const startRecording = async () => {
-        try {
-            const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const media = new MediaRecorder(mediaStream, { type: mimeType });
-            mediaRecorder.current = media;
-            setRecordingStatus("recording");
-            mediaRecorder.current.start();
-
-            let localAudioChunks = [];
-            mediaRecorder.current.ondataavailable = (event) => {
-                if (event.data.size > 0) {
-                    localAudioChunks.push(event.data);
-                }
-            };
-
-            mediaRecorder.current.onstop = () => {
-                const audioBlob = new Blob(localAudioChunks, { type: mimeType });
-                const audioUrl = URL.createObjectURL(audioBlob);
-                onAudioRecorded(audioUrl);
-                setAudioChunks([]);
-                mediaStream.getTracks().forEach(track => track.stop()); // Stop the media stream tracks
-            };
-
-            setAudioChunks(localAudioChunks);
-        } catch (err) {
-            console.error("Could not start recording:", err);
+    useEffect(() => {
+        // Pre-initialize the media stream
+        async function initMediaStream() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaStream.current = stream; // Assign stream to mediaStream.current
+                mediaRecorder.current = new MediaRecorder(stream, { type: mimeType });
+            } catch (err) {
+                console.error("Error accessing the microphone", err);
+            }
         }
+
+        initMediaStream();
+
+        // Cleanup function to stop the media stream when the component is unmounted
+        return () => {
+            if (mediaStream.current) {
+                mediaStream.current.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, []);
+
+    const startRecording = () => {
+        setRecordingStatus("recording");
+        localAudioChunks.current = [];
+        mediaRecorder.current.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                localAudioChunks.current.push(event.data);
+            }
+        };
+
+        mediaRecorder.current.onstop = async () => {
+            const audioBlob = new Blob(localAudioChunks.current, { type: mimeType });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            await convertToWav(audioUrl);
+            onAudioRecorded(audioUrl);
+            localAudioChunks.current = [];
+        };
+
+        mediaRecorder.current.start();
     };
 
     const stopRecording = () => {
@@ -44,16 +58,33 @@ const AudioRecorder = ({ onAudioRecorded }) => {
         mediaRecorder.current.stop();
     };
 
+    const convertToWav = async (audioUrl) => {
+        const response = await fetch(audioUrl);
+        const audioBuffer = await response.arrayBuffer();
+        const audioCtx = new AudioContext();
+        await audioCtx.decodeAudioData(audioBuffer, (buffer) => {
+            const wav = toWav(buffer);
+            const blob = new Blob([new DataView(wav)], {type: 'audio/wav'});
+            const url = URL.createObjectURL(blob);
+            setAudioUrl(url);
+            // Notify parent with WAV URL if necessary
+            // onAudioRecorded(url);
+        }, (e) => {
+            console.log('Audio decoding failed', e);
+        });
+    };
 
     return (
         <div>
-            <WaveformBars recording={recordingStatus === "recording"}/>
             <button onClick={startRecording} disabled={recordingStatus === "recording"}>
                 Start Recording
             </button>
             <button onClick={stopRecording} disabled={recordingStatus !== "recording"}>
                 Stop Recording
             </button>
+            {audioUrl && (
+                <audio src={audioUrl} controls="controls" />
+            )}
         </div>
     );
 };
