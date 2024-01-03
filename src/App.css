@@ -1,35 +1,46 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'PT Sans', sans-serif;
+.App {
+    text-align: center;
+    background-color: #f7f7f7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: black;
 }
 
-.features {
-  
-  background-position: center;
-  background-size: fill;
-  background-repeat: no-repeat;
-  color: black;
-  font-size: 100px;
+/* Add styles for the PlaybackCircle and WaveformBars here */
+.playback-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin: 20px auto;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.aboutus {
-  background: url('./components/images/logo.png');
-  background-position: center;
-  background-size: cover;  /* Use 'cover' to make the image cover the whole container */
-  background-repeat: no-repeat;
-  color: black;
-  font-size: 100px;
-  height: 100vh;  /* Set height to 100% of the viewport height */
+.playback-circle.playing {
+    /* Apply your desired animation for playback */
 }
 
-
-.trybeanhub {
-  background-position: center;
-  background-size: cover;  /* Use 'cover' to make the image cover the whole container */
-  background-repeat: no-repeat;
-  color: black;
-  font-size: 100px;
-  height: 100vh;  /* Set height to 100% of the viewport height */
+.waveform-bars {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 50px;
+    margin: 20px;
+    width: 100%;
 }
+
+.waveform-bars .bar {
+    width: 5px;
+    background-color: #777;
+    transition: height 0.2s;
+    /* Apply your desired animation for recording */
+}
+
+/* Add any other global styles you may need */
