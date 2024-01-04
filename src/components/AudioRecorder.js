@@ -3,7 +3,7 @@ import MicIcon from "./MicIcon";
 import toWav from 'audiobuffer-to-wav';
 import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/aws-s3';
 import { fetchProcessedAudio } from '../utils/endpoint_api';
-
+import OrderTally from './OrderTally';
 const mimeType = "audio/webm";
 
 const AudioRecorder = ({ onAudioRecorded }) => {
@@ -13,6 +13,8 @@ const AudioRecorder = ({ onAudioRecorded }) => {
     const mediaStream = useRef(null);
     const audioContext = useRef(new AudioContext());
     const [audioBuffer, setAudioBuffer] = useState(null);
+    const [hasPlayedAudio, setHasPlayedAudio] = useState(false); // New state variable
+    const [totalAmount, setTotalAmount] = useState(0);
 
     useEffect(() => {
         async function initMediaStream() {
@@ -33,20 +35,21 @@ const AudioRecorder = ({ onAudioRecorded }) => {
 
     useEffect(() => {
         const playback = () => {
-            if (audioBuffer) {
+            if (audioBuffer && !hasPlayedAudio) { // Check if audio has not been played yet
                 const playSound = audioContext.current.createBufferSource();
                 playSound.buffer = audioBuffer;
                 playSound.connect(audioContext.current.destination);
                 playSound.start(audioContext.current.currentTime);
+                setHasPlayedAudio(true); // Set the flag to prevent further playback
             }
         };
 
-        window.addEventListener("mousemove", playback);
+        playback()
 
         return () => {
             window.removeEventListener("playbackEvent", playback);
         };
-    }, [audioBuffer]);
+    }, [audioBuffer, hasPlayedAudio]); // Add audioBuffer and hasPlayedAudio as dependencies
 
     const startRecording = () => {
         setRecordingStatus("recording");
@@ -101,9 +104,9 @@ const AudioRecorder = ({ onAudioRecorded }) => {
     const handleProcessedAudio = async () => {
         const response = await fetchProcessedAudio();
 
-        if (response && response.file) {
+        if (response && response.file && response.floating_point_number) {
+            setTotalAmount(prevTotalAmount => prevTotalAmount + response.floating_point_number);
             const tempFilePath = await saveFromS3(response.file);
-            console.log("Temp file path:", tempFilePath)
             await fetchAndPlayAudio(tempFilePath);
             await deleteTempFile(tempFilePath);
             await deleteFromS3(response.file);
@@ -131,6 +134,7 @@ const AudioRecorder = ({ onAudioRecorded }) => {
 
     return (
         <div>
+            <OrderTally totalAmount={totalAmount} />
             <MicIcon recording={recordingStatus === "recording"}/>
             <button onClick={startRecording} disabled={recordingStatus === "recording"}>
                 Start Recording
