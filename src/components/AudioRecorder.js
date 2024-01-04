@@ -6,6 +6,7 @@ import { fetchProcessedAudio } from '../utils/endpoint_api';
 import OrderTally from './OrderTally';
 const mimeType = "audio/webm";
 
+
 const AudioRecorder = ({ onAudioRecorded }) => {
     const [recordingStatus, setRecordingStatus] = useState("inactive");
     const mediaRecorder = useRef(null);
@@ -26,7 +27,9 @@ const AudioRecorder = ({ onAudioRecorded }) => {
             }
         }
 
+
         initMediaStream();
+
 
         return () => {
             mediaStream.current?.getTracks().forEach(track => track.stop());
@@ -45,6 +48,7 @@ const AudioRecorder = ({ onAudioRecorded }) => {
         };
 
         playback()
+
 
         return () => {
             window.removeEventListener("playbackEvent", playback);
