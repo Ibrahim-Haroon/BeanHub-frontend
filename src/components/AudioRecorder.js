@@ -100,9 +100,11 @@ const AudioRecorder = ({ onAudioRecorded }) => {
 
     const handleProcessedAudio = async () => {
         const response = await fetchProcessedAudio();
+
         if (response && response.file) {
             const tempFilePath = await saveFromS3(response.file);
-            fetchAndPlayAudio(tempFilePath);
+            console.log("Temp file path:", tempFilePath)
+            await fetchAndPlayAudio(tempFilePath);
             await deleteTempFile(tempFilePath);
             await deleteFromS3(response.file);
         }
