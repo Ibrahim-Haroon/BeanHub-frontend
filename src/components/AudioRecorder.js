@@ -74,11 +74,28 @@ const AudioRecorder = ({ onAudioRecorded }) => {
     };
 
     const convertToWav = async (audioUrl) => {
-        const response = await fetch(audioUrl);
-        const audioBuffer = await response.arrayBuffer();
-        const wavBlob = new Blob([new DataView(audioBuffer)], { type: 'audio/wav' });
-        await uploadToS3(wavBlob);
-        await handleProcessedAudio();
+        try {
+            const response = await fetch(audioUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const audioBuffer = await response.arrayBuffer();
+            const audioContext = new AudioContext();
+            const decodedAudio = await audioContext.decodeAudioData(audioBuffer);
+
+            // Now convert the decoded audio to WAV using the toWav function
+            const wavData = toWav(decodedAudio);
+
+            // Create a Blob with the WAV data
+            const wavBlob = new Blob([wavData], { type: 'audio/wav' });
+
+            // Continue with uploading to S3 and handling processed audio
+            await uploadToS3(wavBlob);
+            await handleProcessedAudio();
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        }
     };
 
     const handleProcessedAudio = async () => {
@@ -94,13 +111,21 @@ const AudioRecorder = ({ onAudioRecorded }) => {
     const fetchAndPlayAudio = (filePath) => {
         fetch(filePath)
             .then(data => data.arrayBuffer())
-            .then(arrayBuffer => audioContext.current.decodeAudioData(arrayBuffer))
+            .then(arrayBuffer => {
+                try {
+                    return audioContext.current.decodeAudioData(arrayBuffer);
+                } catch (error) {
+                    console.error('Error decoding audio data:', error);
+                    throw error; // Propagate the error further if needed
+                }
+            })
             .then(decodedAudio => {
                 setAudioBuffer(decodedAudio);
                 const event = new Event('playbackEvent');
                 window.dispatchEvent(event);
             });
     };
+
 
     return (
         <div>
