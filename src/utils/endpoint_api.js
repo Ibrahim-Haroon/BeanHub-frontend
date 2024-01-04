@@ -12,7 +12,7 @@ export const fetchProcessedAudio = async () => {
         }
         const data = await response.json();
         if (data.floating_point_number !== undefined) {
-            console.log('Price:', data.floating_point_number);
+            console.log('File Path:', data.file);
         }
         return data;
     } catch (error) {
