@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import MicIcon from "./MicIcon";
+import OscillatingCircle from "./oscillatingCircle";
+import WaveformLoader from "./waveform";
 import toWav from 'audiobuffer-to-wav';
 import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/aws-s3';
 import { fetchProcessedAudio } from '../utils/endpoint_api';
@@ -137,9 +138,12 @@ const AudioRecorder = ({ onAudioRecorded }) => {
 
 
     return (
-        <div>
-            <OrderTally totalAmount={totalAmount} />
-            <MicIcon recording={recordingStatus === "recording"}/>
+        <div style={{
+            alignItems: 'center',
+        }}>
+            <OrderTally totalAmount={totalAmount} style={{ minHeight: '50px' }} />
+            <OscillatingCircle />
+            <WaveformLoader recording={recordingStatus === "recording"}/>
             <button onClick={startRecording} disabled={recordingStatus === "recording"}>
                 Start Recording
             </button>
@@ -148,6 +152,7 @@ const AudioRecorder = ({ onAudioRecorded }) => {
             </button>
         </div>
     );
+
 };
 
 export default AudioRecorder;
