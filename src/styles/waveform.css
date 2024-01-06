@@ -18,7 +18,7 @@ body {
 .loader .stroke{
     display: block;
     position: relative;
-    background: #f1f1f1;
+    background: #000;
     height: 100%; width: 10px;
     border-radius: 50px;
     margin: 0 5px;
