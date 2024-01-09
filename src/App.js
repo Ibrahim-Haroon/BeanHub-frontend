@@ -1,23 +1,15 @@
 import React, { useState } from 'react';
 import AudioRecorder from './components/AudioRecorder';
-import MicIcon from './components/MicIcon';
-import './App.css';
-
+import OrderLog from './components/OrderLog';
 
 function App() {
-    const [audioUrl, setAudioUrl] = useState(null);
-    const [isRecording, setIsRecording] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(100);
 
-    const handleAudioRecorded = (audioUrl) => {
-        setAudioUrl(audioUrl);
-        setIsRecording(false);
-    };
-
-    return (
-        <div className="App">
-            <AudioRecorder onAudioRecorded={handleAudioRecorded} />
-        </div>
-    );
+  return (
+    <div className="App">
+      <OrderLog totalAmount={totalAmount} />
+    </div>
+  );
 }
 
 export default App;

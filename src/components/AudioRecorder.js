@@ -16,7 +16,7 @@ const AudioRecorder = ({ onAudioRecorded }) => {
     const audioContext = useRef(new AudioContext());
     const [audioBuffer, setAudioBuffer] = useState(null);
     const [hasPlayedAudio, setHasPlayedAudio] = useState(false); // New state variable
-    const [totalAmount, setTotalAmount] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(1000);
 
     useEffect(() => {
         async function initMediaStream() {
@@ -142,7 +142,6 @@ const AudioRecorder = ({ onAudioRecorded }) => {
             alignItems: 'center',
         }}>
             <OrderTally totalAmount={totalAmount} style={{ minHeight: '50px' }} />
-            <OscillatingCircle />
             <WaveformLoader recording={recordingStatus === "recording"}/>
             <button onClick={startRecording} disabled={recordingStatus === "recording"}>
                 Start Recording

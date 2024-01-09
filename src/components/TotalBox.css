@@ -1,0 +1,13 @@
+.total-box {
+    width: 100%;
+    height: 80px;
+    border-radius: 10px;
+    background-color: #fff;
+    border: 3px solid black;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
+  
