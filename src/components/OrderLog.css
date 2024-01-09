@@ -1,0 +1,14 @@
+.order-log {
+    width: auto; /* Set the width to match the CartItem */
+    height: 100%;
+    border-radius: 10px;
+    outline: 3px solid black;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .cart-items-list {
+    margin-top: 10px;
+  }
+  
