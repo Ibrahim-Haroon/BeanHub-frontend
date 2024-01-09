@@ -5,8 +5,9 @@ import toWav from 'audiobuffer-to-wav';
 import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/aws-s3';
 import { fetchProcessedAudio } from '../utils/endpoint_api';
 import OrderTally from './OrderTally';
-const mimeType = "audio/webm";
+import './AudioRecorder.css'; // Add this line if you create a CSS file for AudioRecorder
 
+const mimeType = "audio/webm";
 
 const AudioRecorder = ({ onAudioRecorded }) => {
     const [recordingStatus, setRecordingStatus] = useState("inactive");
@@ -15,7 +16,7 @@ const AudioRecorder = ({ onAudioRecorded }) => {
     const mediaStream = useRef(null);
     const audioContext = useRef(new AudioContext());
     const [audioBuffer, setAudioBuffer] = useState(null);
-    const [hasPlayedAudio, setHasPlayedAudio] = useState(false); // New state variable
+    const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
     const [totalAmount, setTotalAmount] = useState(1000);
 
     useEffect(() => {
@@ -28,9 +29,7 @@ const AudioRecorder = ({ onAudioRecorded }) => {
             }
         }
 
-
         initMediaStream();
-
 
         return () => {
             mediaStream.current?.getTracks().forEach(track => track.stop());
@@ -39,22 +38,21 @@ const AudioRecorder = ({ onAudioRecorded }) => {
 
     useEffect(() => {
         const playback = () => {
-            if (audioBuffer && !hasPlayedAudio) { // Check if audio has not been played yet
+            if (audioBuffer && !hasPlayedAudio) {
                 const playSound = audioContext.current.createBufferSource();
                 playSound.buffer = audioBuffer;
                 playSound.connect(audioContext.current.destination);
                 playSound.start(audioContext.current.currentTime);
-                setHasPlayedAudio(true); // Set the flag to prevent further playback
+                setHasPlayedAudio(true);
             }
         };
 
-        playback()
-
+        playback();
 
         return () => {
             window.removeEventListener("playbackEvent", playback);
         };
-    }, [audioBuffer, hasPlayedAudio]); // Add audioBuffer and hasPlayedAudio as dependencies
+    }, [audioBuffer, hasPlayedAudio]);
 
     const startRecording = () => {
         setRecordingStatus("recording");
@@ -92,13 +90,9 @@ const AudioRecorder = ({ onAudioRecorded }) => {
             const audioContext = new AudioContext();
             const decodedAudio = await audioContext.decodeAudioData(audioBuffer);
 
-            // Now convert the decoded audio to WAV using the toWav function
             const wavData = toWav(decodedAudio);
-
-            // Create a Blob with the WAV data
             const wavBlob = new Blob([wavData], { type: 'audio/wav' });
 
-            // Continue with uploading to S3 and handling processed audio
             await uploadToS3(wavBlob);
             await handleProcessedAudio();
         } catch (error) {
@@ -126,7 +120,7 @@ const AudioRecorder = ({ onAudioRecorded }) => {
                     return audioContext.current.decodeAudioData(arrayBuffer);
                 } catch (error) {
                     console.error('Error decoding audio data:', error);
-                    throw error; // Propagate the error further if needed
+                    throw error;
                 }
             })
             .then(decodedAudio => {
@@ -136,22 +130,23 @@ const AudioRecorder = ({ onAudioRecorded }) => {
             });
     };
 
-
     return (
-        <div style={{
-            alignItems: 'center',
-        }}>
-            <OrderTally totalAmount={totalAmount} style={{ minHeight: '50px' }} />
-            <WaveformLoader recording={recordingStatus === "recording"}/>
-            <button onClick={startRecording} disabled={recordingStatus === "recording"}>
-                Start Recording
-            </button>
-            <button onClick={stopRecording} disabled={recordingStatus !== "recording"}>
-                Stop Recording
-            </button>
+        <div className="audio-recorder-container">
+            {/* Other components */}
+            <OscillatingCircle />
+            <div className="waveform-loader-container">
+                <WaveformLoader recording={recordingStatus === "recording"} />
+            </div>
+            <div className="button-container">
+                <button onClick={startRecording} disabled={recordingStatus === "recording"}>
+                    Start Recording
+                </button>
+                <button onClick={stopRecording} disabled={recordingStatus !== "recording"}>
+                    Stop Recording
+                </button>
+            </div>
         </div>
     );
-
 };
 
 export default AudioRecorder;

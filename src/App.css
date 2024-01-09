@@ -3,15 +3,15 @@
     background-color: #f7f7f7;
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+  flex-direction: row;
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
     color: black;
-}
-
-/* Add styles for the PlaybackCircle and MicIcon here */
-.playback-circle {
+  }
+  
+  /* Add styles for the PlaybackCircle and MicIcon here */
+  .playback-circle {
     width: 200px;
     height: 200px;
     border-radius: 50%;
@@ -21,26 +21,31 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.playback-circle.playing {
+  }
+  
+  .playback-circle.playing {
     /* Apply your desired animation for playback */
-}
-
-.waveform-bars {
+  }
+  
+  .waveform-bars {
     display: flex;
     justify-content: space-around;
     align-items: flex-end;
     height: 50px;
     margin: 20px;
     width: 100%;
-}
-
-.waveform-bars .bar {
+  }
+  
+  .waveform-bars .bar {
     width: 5px;
     background-color: #777;
     transition: height 0.2s;
     /* Apply your desired animation for recording */
-}
+  }
+  
+  /* Add any other global styles you may need */
 
-/* Add any other global styles you may need */
+  .log-container {
+    display: flex;
+    justify-content: space-between;
+  }

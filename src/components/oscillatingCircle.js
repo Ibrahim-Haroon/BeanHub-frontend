@@ -7,8 +7,8 @@ function OscillatingCircle() {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = 700; // Set canvas width to 700 pixels
+        canvas.height = 200; // Set canvas height to a fixed value, adjust as needed
 
         let one = 1;
 
@@ -24,8 +24,8 @@ function OscillatingCircle() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             one = increment(one, 2000);
 
-            const baseSize = 50;
-            const amplitude = 15;
+            const baseSize = 20; // Adjust the base size to make it smaller
+            const amplitude = 5; // Adjust the amplitude to control oscillation
             const frequency = Math.sin(cycles(one) * Math.PI * 2);
             const size = baseSize + amplitude * frequency;
 

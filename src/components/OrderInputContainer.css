@@ -1,0 +1,8 @@
+.order-input-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  border: 3px solid black;
+  margin: 20px; /* Adjust margin as needed */
+}
+/* Add any additional styles as needed */

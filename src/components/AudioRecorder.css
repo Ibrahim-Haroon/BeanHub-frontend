@@ -1,0 +1,15 @@
+.audio-recorder-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-container {
+    display: flex;
+    margin-top: 10px;
+}
+
+button {
+    margin: 0 
+}
