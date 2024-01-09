@@ -1,7 +1,7 @@
 import React from 'react';
 import OrderLog from './OrderLog';
 import InputLog from './InputLog';
-import './OrderInputContainer.css';
+import '../styles/OrderInputContainer.css';
 
 const OrderInputContainer = () => {
   return (

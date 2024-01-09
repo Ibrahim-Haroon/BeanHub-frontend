@@ -2,7 +2,7 @@
 import React from 'react';
 import CartItem from './CartItem';
 import TotalBox from './TotalBox';
-import './OrderLog.css';
+import '../styles/OrderLog.css';
 
 const OrderLog = ({ totalAmount }) => {
   console.log('Total Amount in OrderLog:', totalAmount);

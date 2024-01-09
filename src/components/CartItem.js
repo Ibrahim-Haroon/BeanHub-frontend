@@ -1,6 +1,6 @@
 // CartItem.js
 import React from 'react';
-import './CartItem.css';
+import '../styles/CartItem.css';
 
 const CartItem = ({ className, itemName, quantity, price }) => {
   return (

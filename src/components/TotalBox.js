@@ -1,6 +1,6 @@
 // TotalBox.js
 import React from 'react';
-import './TotalBox.css';
+import '../styles/TotalBox.css';
 import OrderTally from './OrderTally';
 
 const TotalBox = ({ totalAmount }) => {
