@@ -1,6 +1,6 @@
 import React from 'react';
 import AudioRecorder from './AudioRecorder';
-import './InputLog.css';
+import '../styles/InputLog.css';
 
 const InputLog = () => {
   return (

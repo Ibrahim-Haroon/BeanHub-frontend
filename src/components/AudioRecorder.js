@@ -5,7 +5,7 @@ import toWav from 'audiobuffer-to-wav';
 import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/aws-s3';
 import { fetchProcessedAudio } from '../utils/endpoint_api';
 import OrderTally from './OrderTally';
-import './AudioRecorder.css'; // Add this line if you create a CSS file for AudioRecorder
+import '../styles/AudioRecorder.css'; // Add this line if you create a CSS file for AudioRecorder
 
 const mimeType = "audio/webm";
 
