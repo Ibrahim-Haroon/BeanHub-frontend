@@ -25,6 +25,14 @@ body {
     animation: animate 1.2s linear infinite;
 }
 
+.mic-icon {
+    height: inherit;
+}
+
+.waveform {
+    height: 50px; /* replace with the actual height of your waveform */
+}
+
 @keyframes animate{
     50%{
         height: 20%;
@@ -33,6 +41,8 @@ body {
         height: 100%;
     }
 }
+
+
 .stroke:nth-child(1){
     animation-delay: 0s;
 }
