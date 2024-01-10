@@ -19,10 +19,9 @@ export const uploadToS3 = async (file) => {
 
     try {
         await s3.upload(params).promise();
-        return true
+        return fileName
     } catch (error) {
         console.error(error);
-        return false
     }
 };
 
