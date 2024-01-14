@@ -20,7 +20,8 @@ export async function initialFetchProcessedAudio(file_path) {
             throw new TypeError("Oops, we haven't got JSON!");
         }
 
-        return await response.json();
+        return await response.json()
+
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
         return "error"
@@ -49,6 +50,7 @@ export async function fetchProcessedAudio(file_path, unique_id) {
         }
 
         return await response.json();
+
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
         return "error"
