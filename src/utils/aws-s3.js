@@ -58,21 +58,31 @@ export const saveFromS3 = async (fileKey) => {
 
     const s3 = new AWS.S3();
 
-    try {
-        const params = {
-            Bucket: process.env.REACT_APP_S3_BUCKET,
-            Key: fileKey,
-        };
-        const data = await s3.getObject(params).promise();
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    let total_time_delay = 0;
 
-        // Create a Blob from the data
-        const blob = new Blob([data.Body], { type: 'audio/wav' });
+    for (let attempt = 0; attempt < 1_000_000; ++attempt) {
+        try {
+            const params = {
+                Bucket: process.env.REACT_APP_S3_BUCKET,
+                Key: fileKey,
+            };
+            const data = await s3.getObject(params).promise();
 
-        // Create a URL for the Blob
-        return URL.createObjectURL(blob);
-    } catch (error) {
-        console.error('Error handling the .wav file:', error);
+            // Create a Blob from the data
+            const blob = new Blob([data.Body], { type: 'audio/wav' });
+
+            console.log("Total time delay: ", total_time_delay);
+            // Create a URL for the Blob
+            return URL.createObjectURL(blob);
+        } catch (error) {
+            // Wait for 100ms before next attempt
+            total_time_delay += 100;
+            await delay(50);
+        }
     }
+
+    throw new Error('Failed to retrieve .wav file from S3');
 };
 
 
