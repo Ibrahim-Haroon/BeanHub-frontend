@@ -9,39 +9,39 @@
     font-size: calc(10px + 2vmin);
     color: black;
   }
-  
-  /* Add styles for the PlaybackCircle and MicIcon here */
-  .playback-circle {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background-color: #ddd;
-    margin: 20px auto;
-    transition: transform 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  .playback-circle.playing {
-    /* Apply your desired animation for playback */
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
   }
-  
-  .waveform-bars {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
-    height: 50px;
-    margin: 20px;
-    width: 100%;
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  .waveform-bars .bar {
-    width: 5px;
-    background-color: #777;
-    transition: height 0.2s;
-    /* Apply your desired animation for recording */
+}
+
+.talking-animation.active {
+  animation: pulse 1s infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0;
   }
+  50% {
+    opacity: 1;
+  }
+}
+
+.response-animation.active {
+  animation: fadeInOut 2s infinite;
+}
+
   
   /* Add any other global styles you may need */
 
