@@ -1,5 +1,5 @@
-.order-log {
-  width: auto; /* Set the width to match the CartItem */
+.order-screen {
+  width: auto;
   height: 100%;
   border-radius: 10px;
   outline: 3px solid black;
@@ -8,8 +8,33 @@
   flex-direction: column;
 }
 
-.cart-items-list {
-  margin-top: 10px;
+.cart-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }
 
-/* Add any additional styles as needed */
+.sub-item {
+  margin-left: 20px;
+  font-style: italic;
+  color: #555;
+}
+
+.item-name {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.item-quantity, .item-price, .item-size, .item-temp, .item-milk-type, .item-sweeteners, .item-add-ons {
+  margin-top: 5px;
+  font-size: 0.9em;
+  color: #333;
+}
+
+.item-add-ons, .item-milk-type, .item-sweeteners {
+  margin-top: 10px;
+  padding-left: 10px;
+  border-left: 2px solid #eee;
+}
