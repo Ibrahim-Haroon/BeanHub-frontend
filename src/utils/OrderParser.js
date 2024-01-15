@@ -53,10 +53,10 @@ const order1 = [
 ];
 
 function parseCoffeeOrBeverageItem(item, key) {
-    let i = 0;
-    let res = {};
+    let i = 0 , res = {};
 
     const itemModification = item[key]['cart_action'] === "modification";
+    itemModification ? console.log("modification") : console.log("insertion");
     const itemQuantity = item[key]['quantity'][0] || 1;
     res['item_name'] = [item[key]['item_name'],
         itemModification ? -itemQuantity : itemQuantity,
@@ -112,16 +112,29 @@ export const parseOrder = (order) => {
     for (const item of order) {
         let res = {};
         for (const key in item) {
-            if (item[key]['cart_action'] === 'question') {
+            const cartAction = item[key]['cart_action']
+            if (cartAction === 'question') {
                 console.log('question');
                 continue;
             }
             if (key === 'CoffeeItem' || key === 'BeverageItem') {
                 console.log('coffee or beverage');
                 res = parseCoffeeOrBeverageItem(item, key);
+                if (cartAction === 'modification') {
+                    res['cart_action'] = 'modification';
+                } else {
+                    res['cart_action'] = 'insertion';
+                }
+
             } else if (key === 'FoodItem' || key === 'BakeryItem') {
                 console.log('food or bakery');
                 res = parseBakeryOrFoodItem(item, key);
+                if (cartAction === 'modification') {
+                    res['cart_action'] = 'modification';
+                } else {
+                    res['cart_action'] = 'insertion';
+                }
+
             } else {
                 console.log('error');
             }
