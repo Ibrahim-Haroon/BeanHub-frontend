@@ -59,6 +59,7 @@ export const saveFromS3 = async (fileKey) => {
     const s3 = new AWS.S3();
 
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    const time_delay = 1;
     let total_time_delay = 0;
 
     for (let attempt = 0; attempt < 1_000_000; ++attempt) {
@@ -76,9 +77,9 @@ export const saveFromS3 = async (fileKey) => {
             // Create a URL for the Blob
             return URL.createObjectURL(blob);
         } catch (error) {
-            // Wait for 100ms before next attempt
-            total_time_delay += 100;
-            await delay(50);
+            // Wait for 1 ms before next attempt
+            total_time_delay += time_delay;
+            await delay(time_delay);
         }
     }
 
