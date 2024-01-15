@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/OrderScreen.css';
 
 const OrderScreen = ({ cartItems }) => {
     const renderSubItems = (subItems) => {
