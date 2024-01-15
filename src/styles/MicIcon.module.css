@@ -1,32 +1,7 @@
-.waveformContainer {
-    display: flex;
-    align-items: center;
-}
-
 .microphoneIcon {
+    display: flex;
+    justify-content: center;
     width: 40px; /* Or the size of your microphone icon */
     height: 40px; /* Or the size of your microphone icon */
     margin-right: 10px;
 }
-
-.waveformBars {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    height: 50px;
-    width: 100px; /* Adjust as needed */
-}
-
-.bar {
-    width: 10px; /* Adjust as needed */
-    height: 10%;
-    background-color: white;
-    transition: height 0.2s;
-    animation: idleWave 1.5s infinite ease-in-out;
-}
-
-.active {
-    animation: activeWave 1s infinite ease-in-out;
-}
-
-
