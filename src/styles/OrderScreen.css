@@ -1,40 +1,49 @@
-.order-screen {
-  width: auto;
+.order-log {
+  width: calc(100% - 20px);
   height: 100%;
   border-radius: 10px;
   outline: 3px solid black;
   padding: 10px;
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
+}
+
+
+.cart-items-list {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin-bottom: 20px;
 }
 
 .cart-item {
-  border: 1px solid #ddd;
-  padding: 10px;
+  border: 1px solid #f90;
+  border-radius: 8px;
+  padding: 8px;
   margin-bottom: 10px;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-}
-
-.sub-item {
-  margin-left: 20px;
-  font-style: italic;
-  color: #555;
 }
 
 .item-name {
   font-weight: bold;
-  font-size: 1.1em;
+  margin-bottom: 5px;
 }
 
-.item-quantity, .item-price, .item-size, .item-temp, .item-milk-type, .item-sweeteners, .item-add-ons {
-  margin-top: 5px;
+.item-quantity, .item-price {
   font-size: 0.9em;
-  color: #333;
+  margin-bottom: 3px;
 }
 
-.item-add-ons, .item-milk-type, .item-sweeteners {
+.order-total {
+  font-weight: bold;
+  text-align: right;
   margin-top: 10px;
-  padding-left: 10px;
-  border-left: 2px solid #eee;
+}
+
+/* Additional styles for sub-items if needed */
+.sub-item {
+  background: #f0f0f0;
+  margin: 5px 0;
+  padding: 3px;
+  border-radius: 4px;
 }
