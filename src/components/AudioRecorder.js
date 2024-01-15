@@ -3,6 +3,7 @@ import toWav from 'audiobuffer-to-wav';
 import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/AWSBucket';
 import { fetchProcessedAudio, initialFetchProcessedAudio } from '../utils/EndpointAPI';
 import '../styles/AudioRecorder.css';
+import micIcon from "./MicIcon";
 
 const mimeType = "audio/webm";
 
@@ -176,9 +177,14 @@ const AudioRecorder = ({onAudioRecorded, updateCart}) => {
 
 
   return (
-      <div className="audio-recorder" onClick={toggleRecording} style={{width: '100%'}}>
-        <div className="status-indicator">
-          <p>{recordingStatus ? 'Recording...' : 'Not Recording'}</p>
+      <div className="audio-recorder" onClick={toggleRecording}>
+        <div className="recording-container">
+          <div className={`mic-icon ${recordingStatus ? 'recording' : ''}`}>
+            {micIcon(recordingStatus)}
+          </div>
+          <div className="status-indicator">
+            <p>{recordingStatus ? 'Recording...' : 'Not Recording'}</p>
+          </div>
         </div>
       </div>
   );
