@@ -52,37 +52,41 @@ const order1 = [
 
 function parseCoffeeOrBeverageItem(item, key) {
     let i = 0;
-    const res = {};
+    let res = {};
+
     const itemModification = item[key]['cart_action'] === "modification";
-    const itemQuantity = item[key]['quantity'].length ? item[key]['quantity'][0] : 1;
+    const itemQuantity = item[key]['quantity'][0] || 1;
     res['item_name'] = [item[key]['item_name'],
-        !itemModification ? itemQuantity : -itemQuantity,
+        itemModification ? -itemQuantity : itemQuantity,
         i < item[key]['price'].length ? item[key]['price'][i++] * itemQuantity : 0];
     res['size'] = item[key]['size'];
     res['temp'] = item[key]['temp'];
 
+    res['add_ons'] = [];
     for (let j = 0; j < item[key]['add_ons'].length; j++) {
         const modification = item[key]['cart_action'] === "modification";
-        const quantity = i < item[key]['quantity'].length ? item[key]['quantity'][i] : 1;
-        res['add_ons'] = [item[key]['add_ons'][j],
-            !modification ? quantity : -quantity,
-            i < item[key]['price'].length ? item[key]['price'][i++] * quantity : 0];
+        const quantity = item[key]['quantity'][i] || 1;
+        res['add_ons'].push([item[key]['add_ons'][j],
+            modification ? -quantity : quantity,
+            i < item[key]['price'].length ? item[key]['price'][i++] * itemQuantity : 0]);
     }
 
+    res['milk_type'] = [];
     if (item[key]['milk_type']) {
         const modification = item[key]['cart_action'] === "modification";
-        const quantity = i < item[key]['quantity'].length ? item[key]['quantity'][i] : 1;
-        res['milk_type'] = [item[key]['milk_type'],
-            !modification ? quantity : -quantity,
-            i < item[key]['price'].length ? item[key]['price'][i++] * quantity : 0];
+        const quantity = item[key]['quantity'][i] || 1;
+        res['milk_type'].push([item[key]['milk_type'],
+            modification ? -quantity : quantity,
+            i < item[key]['price'].length ? item[key]['price'][i++] * itemQuantity : 0]);
     }
 
+    res['sweeteners'] = [];
     for (let j = 0; j < item[key]['sweeteners'].length; j++) {
         const modification = item[key]['cart_action'] === "modification";
-        const quantity = i < item[key]['quantity'].length ? item[key]['quantity'][i] : 1;
-        res['sweeteners'] = [item[key]['sweeteners'][j],
-            !modification ? quantity : -quantity,
-            i < item[key]['price'].length ? item[key]['price'][i++] * quantity : 0];
+        const quantity = item[key]['quantity'][i] || 1;
+        res['sweeteners'].push([item[key]['sweeteners'][j],
+            modification ? -quantity : quantity,
+            i < item[key]['price'].length ? item[key]['price'][i++] * itemQuantity : 0]);
     }
 
     return res;
@@ -100,7 +104,7 @@ function parseBakeryOrFoodItem(item, key) {
     };
 }
 
-function parser(order) {
+function parseOrder(order) {
     for (const item of order) {
         let res = {};
         for (const key in item) {
@@ -121,3 +125,6 @@ function parser(order) {
         console.log(res);
     }
 }
+
+parseOrder(order);
+
