@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/OrderTotal.css';
 
 const OrderTotal = ({ cartItems }) => {
     const calculateTotal = (items) => {
@@ -23,7 +24,7 @@ const OrderTotal = ({ cartItems }) => {
     const total = calculateTotal(cartItems);
 
     return (
-        <div className="order-total">
+        <div className="total-box">
             <h3>Total: ${total.toFixed(2)}</h3> {/* toFixed(2) to format as a currency */}
         </div>
     );
