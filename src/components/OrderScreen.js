@@ -13,16 +13,18 @@ const OrderScreen = ({ cartItems }) => {
         // Destructure item properties
         const { item_name, size, temp, add_ons, milk_type, sweeteners } = item;
 
+        const displayMilkType = milk_type && milk_type.some(milk => milk[0] !== 'regular');
+
         return (
             <div className="cart-item">
                 <div className="item-name">Name: {item_name[0]}</div>
                 <div className="item-quantity">Quantity: {item_name[1]}</div>
                 <div className="item-price">Price: ${item_name[2]}</div>
-                {size && <div className="item-size">Size: {size}</div>}
-                {temp && <div className="item-temp">Temperature: {temp}</div>}
-                {add_ons && <div className="item-add-ons">Add-ons: {renderSubItems(add_ons)}</div>}
-                {milk_type && <div className="item-milk-type">Milk Type: {renderSubItems(milk_type)}</div>}
-                {sweeteners && <div className="item-sweeteners">Sweeteners: {renderSubItems(sweeteners)}</div>}
+                {size && size !== "regular" && <div className="item-size">Size: {size}</div>}
+                {temp && temp !== "regular" && <div className="item-temp">Temperature: {temp}</div>}
+                {add_ons && add_ons.length > 0 && <div className="item-add-ons">Add-ons: {renderSubItems(add_ons)}</div>}
+                {displayMilkType && <div className="item-milk-type">Milk Type: {renderSubItems(milk_type)}</div>}
+                {sweeteners && sweeteners.length > 0 && <div className="item-sweeteners">Sweeteners: {renderSubItems(sweeteners)}</div>}
             </div>
         );
     };
