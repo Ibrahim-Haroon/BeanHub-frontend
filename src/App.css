@@ -3,9 +3,9 @@
     background-color: #f7f7f7;
     min-height: 100vh;
     display: flex;
-  flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     font-size: calc(10px + 2vmin);
     color: black;
   }
@@ -45,7 +45,7 @@
   
   /* Add any other global styles you may need */
 
-  .log-container {
-    display: flex;
-    justify-content: space-between;
-  }
+.log-container {
+  display: flex;
+  justify-content: space-between;
+}
