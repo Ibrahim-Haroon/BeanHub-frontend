@@ -176,7 +176,7 @@ const AudioRecorder = ({onAudioRecorded, updateCart}) => {
 
 
   return (
-      <div className="audio-recorder" onClick={toggleRecording} style={{height: '100vh', width: '100vw'}}>
+      <div className="audio-recorder" onClick={toggleRecording} style={{width: '100%'}}>
         <div className="status-indicator">
           <p>{recordingStatus ? 'Recording...' : 'Not Recording'}</p>
         </div>
