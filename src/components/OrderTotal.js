@@ -3,8 +3,20 @@ import React from 'react';
 const OrderTotal = ({ cartItems }) => {
     const calculateTotal = (items) => {
         return items.reduce((total, item) => {
-            // Assuming item.item_name[2] is the price and item.item_name[1] is the quantity
-            return total + (item.item_name[2] * item.item_name[1]);
+            let itemTotal = item.item_name[1] * item.item_name[2];
+
+            // Calculate total for sub-items: add_ons, milk_type, sweeteners
+            const calculateSubItemTotal = (subItems) => {
+                return subItems.reduce((subTotal, subItem) => {
+                    return subTotal + (subItem[1] * subItem[2]);
+                }, 0);
+            };
+
+            if(item.add_ons) itemTotal += calculateSubItemTotal(item.add_ons);
+            if(item.milk_type) itemTotal += calculateSubItemTotal(item.milk_type);
+            if(item.sweeteners) itemTotal += calculateSubItemTotal(item.sweeteners);
+
+            return total + itemTotal;
         }, 0);
     };
 
