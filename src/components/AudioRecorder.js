@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import OscillatingCircle from "./oscillatingCircle";
-import WaveformLoader from "./waveform";
 import toWav from 'audiobuffer-to-wav';
-import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/aws-s3';
-import { fetchProcessedAudio, initialFetchProcessedAudio } from '../utils/endpoint_api';
-import OrderTally from './OrderTally';
+import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/AWSBucket';
+import { fetchProcessedAudio, initialFetchProcessedAudio } from '../utils/EndpointAPI';
 import '../styles/AudioRecorder.css';
 
 const mimeType = "audio/webm";
 
-const AudioRecorder = ({onAudioRecorded}) => {
+const AudioRecorder = ({onAudioRecorded, updateCart}) => {
   const [recordingStatus, setRecordingStatus] = useState(false);
   const mediaStream = useRef(null);
   const localAudioChunks = useRef([]);
@@ -17,7 +14,6 @@ const AudioRecorder = ({onAudioRecorded}) => {
   const audioContext = useRef(new AudioContext());
   const [audioBuffer, setAudioBuffer] = useState(null);
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
-  const [totalAmount, setTotalAmount] = useState(0);
   const [uniqueId, setUniqueId] = useState(null);
 
   useEffect(() => {
@@ -94,7 +90,6 @@ const AudioRecorder = ({onAudioRecorded}) => {
     mediaRecorder.current.stop();
   };
 
-
   // Convert audio to .wav format
   const convertToWav = async (audioUrl) => {
     try {
@@ -142,11 +137,7 @@ const AudioRecorder = ({onAudioRecorded}) => {
 
       if (response && response.file_path && response.json_order) {
         console.log("Got valid response from backend");
-        const prices: number[] = response.json_order[0].MenuItem.price;
-        let sum = prices.reduce(function (acc, currentValue) {
-          return acc + currentValue;
-        }, 0);
-        setTotalAmount(prevTotalAmount => prevTotalAmount + sum);
+        updateCart(response.json_order);
         console.log("Saving res file from S3");
         const tempFilePath = await saveFromS3(response.file_path);
         console.log("Successfully saved res file from S3 and about to decode audio");
@@ -186,14 +177,9 @@ const AudioRecorder = ({onAudioRecorded}) => {
 
   return (
       <div className="audio-recorder" onClick={toggleRecording} style={{height: '100vh', width: '100vw'}}>
-        <OscillatingCircle/>
         <div className="status-indicator">
           <p>{recordingStatus ? 'Recording...' : 'Not Recording'}</p>
         </div>
-        <div className="waveform-loader-container">
-          <WaveformLoader recording={recordingStatus}/>
-        </div>
-        <OrderTally totalAmount={totalAmount}/>
       </div>
   );
 };
