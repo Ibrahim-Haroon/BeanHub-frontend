@@ -57,8 +57,7 @@ function parseCoffeeOrBeverageItem(item, key) {
     const itemQuantity = item[key]['quantity'].length ? item[key]['quantity'][0] : 1;
     res['item_name'] = [item[key]['item_name'],
         !itemModification ? itemQuantity : -itemQuantity,
-        i < item[key]['price'].length ? item[key]['price'][i] * itemQuantity : 0];
-    i++;
+        i < item[key]['price'].length ? item[key]['price'][i++] * itemQuantity : 0];
     res['size'] = item[key]['size'];
     res['temp'] = item[key]['temp'];
 
@@ -67,8 +66,7 @@ function parseCoffeeOrBeverageItem(item, key) {
         const quantity = i < item[key]['quantity'].length ? item[key]['quantity'][i] : 1;
         res['add_ons'] = [item[key]['add_ons'][j],
             !modification ? quantity : -quantity,
-            i < item[key]['price'].length ? item[key]['price'][i] * quantity : 0];
-        i++;
+            i < item[key]['price'].length ? item[key]['price'][i++] * quantity : 0];
     }
 
     if (item[key]['milk_type']) {
@@ -76,8 +74,7 @@ function parseCoffeeOrBeverageItem(item, key) {
         const quantity = i < item[key]['quantity'].length ? item[key]['quantity'][i] : 1;
         res['milk_type'] = [item[key]['milk_type'],
             !modification ? quantity : -quantity,
-            i < item[key]['price'].length ? item[key]['price'][i] * quantity : 0];
-        i++;
+            i < item[key]['price'].length ? item[key]['price'][i++] * quantity : 0];
     }
 
     for (let j = 0; j < item[key]['sweeteners'].length; j++) {
@@ -85,8 +82,7 @@ function parseCoffeeOrBeverageItem(item, key) {
         const quantity = i < item[key]['quantity'].length ? item[key]['quantity'][i] : 1;
         res['sweeteners'] = [item[key]['sweeteners'][j],
             !modification ? quantity : -quantity,
-            i < item[key]['price'].length ? item[key]['price'][i] * quantity : 0];
-        i++;
+            i < item[key]['price'].length ? item[key]['price'][i++] * quantity : 0];
     }
 
     return res;
