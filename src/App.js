@@ -19,9 +19,27 @@ function App() {
 
     const updateCart = (order) => {
         console.log("Going to update cart with order: ", order);
-        const parsedOrder = parseOrder(order)
+        const parsedOrder = parseOrder(order);
         console.log("Parsed order: ", parsedOrder);
-        setCartItems(currentCartItems => [...currentCartItems, ...parsedOrder]);
+        for (const order of parsedOrder) {
+            console.log(order['cart_action']);
+            if (order['cart_action'] === 'modification') {
+                updateItemQuantity(order['item_name'][0], order['item_name'][1])
+            }
+            else setCartItems(currentCartItems => [...currentCartItems, order]);
+        }
+    };
+
+    const updateItemQuantity = (itemName, quantityChange) => {
+        setCartItems(prevItems => prevItems.map(item => {
+            if (item.item_name[0] === itemName) {
+                const updatedQuantity = item.item_name[1] + quantityChange;
+                return updatedQuantity > 0
+                    ? { ...item, item_name: [item.item_name[0], updatedQuantity, item.item_name[2]] }
+                    : null;
+            }
+            return item;
+        }).filter(item => item != null));
     };
 
     return (
