@@ -1,3 +1,5 @@
+
+
 const order = [
     {
         'CoffeeItem': {
@@ -104,7 +106,9 @@ function parseBakeryOrFoodItem(item, key) {
     };
 }
 
-function parseOrder(order) {
+export const parseOrder = (order) => {
+    console.log("Entered parseOrder");
+    let finalOrder = [];
     for (const item of order) {
         let res = {};
         for (const key in item) {
@@ -112,19 +116,22 @@ function parseOrder(order) {
                 console.log('question');
                 continue;
             }
-
             if (key === 'CoffeeItem' || key === 'BeverageItem') {
+                console.log('coffee or beverage');
                 res = parseCoffeeOrBeverageItem(item, key);
             } else if (key === 'FoodItem' || key === 'BakeryItem') {
+                console.log('food or bakery');
                 res = parseBakeryOrFoodItem(item, key);
             } else {
                 console.log('error');
             }
-        }
 
-        console.log(res);
+            console.log(res);
+            finalOrder.push(res);
+        }
     }
+    console.log("Done parsing order");
+    return finalOrder;
 }
 
-parseOrder(order);
 
