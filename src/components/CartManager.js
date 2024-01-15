@@ -1,12 +1,11 @@
-import React, {useState} from 'react';
-import parseOrder from '../utils/OrderParser';
+import React from 'react';
+import {parseOrder} from "../utils/OrderParser";
 
-const CartManager = () => {
-    const [cartItems, setCartItems] = useState([]);
+const CartManager = ({ cartItems, setCartItems }) => {
 
-    const addItemToCart = (item) => {
-        const parsedOrder = parseOrder(item);
-        setCartItems(prevItems => [...prevItems, parsedOrder]);
+    const addItemToCart = (order) => {
+        const parsedOrder = parseOrder(order);
+        setCartItems(prevItems => [...prevItems, ...parsedOrder]); // Assuming parseOrder returns an array of items
     };
 
     const removeItemFromCart = (itemName) => {
@@ -20,16 +19,12 @@ const CartManager = () => {
     };
 
     const calculateTotal = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+        // Assuming item.item_name[2] is the price and item.item_name[1] is the quantity
+        return cartItems.reduce((total, item) => total + (item.item_name[2] * item.item_name[1]), 0);
     };
 
-    // Render logic and additional component functionality goes here
-
-    return (
-        <div>
-            {/* Display cart items and total, add controls for modification */}
-        </div>
-    );
+    // CartManager does not render anything itself
+    return null;
 };
 
 export default CartManager;
