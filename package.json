@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "annyang": "^2.6.1",
     "audiobuffer-to-wav": "^1.0.0",
     "aws-sdk": "^2.1528.0",
     "cors": "^2.8.5",
@@ -19,6 +20,7 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "react-voice-recorder-player": "^1.1.0",
+    "web-audio-recorder-js": "^0.0.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
