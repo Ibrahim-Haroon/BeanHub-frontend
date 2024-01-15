@@ -1,7 +1,7 @@
-// OrderTally.js
+// OrderTotal.js
 import React from 'react';
 
-const OrderTally = ({ totalAmount }) => {
+const OrderTotal = ({ totalAmount }) => {
     return (
       <div className="order-tally">
         <h2>Total: {totalAmount}</h2>
@@ -9,4 +9,4 @@ const OrderTally = ({ totalAmount }) => {
     );
   };
 
-export default OrderTally;
+export default OrderTotal;
