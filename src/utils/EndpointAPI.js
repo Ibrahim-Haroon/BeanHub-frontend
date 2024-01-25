@@ -3,7 +3,9 @@
 export async function initialFetchProcessedAudio(file_path) {
     try {
         const requestData = { file_path: file_path };
-        const response = await fetch('http://127.0.0.1:8000/audio_endpoint/', {
+        const endpoint = process.env.REACT_APP_BACKEND_ENDPOINT + '/audio_endpoint/';
+        console.log(endpoint);
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -32,7 +34,9 @@ export async function initialFetchProcessedAudio(file_path) {
 export async function fetchProcessedAudio(file_path, unique_id) {
     try {
         const requestData = { file_path: file_path, unique_id: unique_id};
-        const response = await fetch('http://127.0.0.1:8000/audio_endpoint/', {
+        const endpoint = process.env.REACT_APP_BACKEND_ENDPOINT + '/audio_endpoint/';
+        console.log(endpoint);
+        const response = await fetch(endpoint, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
