@@ -136,9 +136,10 @@ const AudioRecorder = ({onAudioRecorded, updateCart}) => {
 
       console.log("Response from backend: ", response);
 
-      if (response && response.file_path && response.json_order) {
+    if (response && response.file_path && response.json_order) {
         console.log("Got valid response from backend");
-        updateCart(response.json_order);
+        if (!response.json_order.human_response)
+          updateCart(response.json_order);
         console.log("Saving res file from S3");
         const tempFilePath = await saveFromS3(response.file_path);
         console.log("Successfully saved res file from S3 and about to decode audio");
@@ -149,7 +150,7 @@ const AudioRecorder = ({onAudioRecorded, updateCart}) => {
         console.log("Got invalid response from backend");
       }
     } catch (error) {
-      console.error('There has been a problem with your fetch operation:', error);
+      console.error('There has been a problem with your audio processioning operation:', error);
     }
   };
 
