@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AudioRecorder from './components/AudioRecorder';
+import AudioProcessing from './components/AudioProcessing';
 import OrderScreen from "./components/OrderScreen";
 import OrderTotal from "./components/OrderTotal";
 import { parseOrder } from "./utils/OrderParser";
@@ -43,7 +43,7 @@ function App() {
 
     return (
         <div className="App">
-            <AudioRecorder onAudioRecorded={handleAudioRecorded} updateCart={updateCart} />
+            <AudioProcessing onAudioRecorded={handleAudioRecorded} updateCart={updateCart} />
             <OrderScreen cartItems={cartItems} />
             <OrderTotal cartItems={cartItems} />
         </div>

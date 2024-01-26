@@ -7,7 +7,7 @@ import micIcon from "./MicIcon";
 
 const mimeType = "audio/webm";
 
-const AudioRecorder = ({onAudioRecorded, updateCart}) => {
+const AudioProcessing = ({onAudioRecorded, updateCart}) => {
   const [recordingStatus, setRecordingStatus] = useState(false);
   const mediaStream = useRef(null);
   const localAudioChunks = useRef([]);
@@ -191,4 +191,4 @@ const AudioRecorder = ({onAudioRecorded, updateCart}) => {
   );
 };
 
-export default AudioRecorder;
+export default AudioProcessing;
