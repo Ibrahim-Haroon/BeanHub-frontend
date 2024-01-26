@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import toWav from 'audiobuffer-to-wav';
-import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/AWSBucket';
-import { fetchProcessedAudio, initialFetchProcessedAudio } from '../utils/EndpointAPI';
-import '../styles/AudioRecorder.css';
 import micIcon from "./MicIcon";
+import '../styles/AudioRecorder.css';
+import toWav from 'audiobuffer-to-wav';
+import { isMobile, isTablet } from 'react-device-detect';
+import React, { useState, useEffect, useRef } from 'react';
+import { fetchProcessedAudio, initialFetchProcessedAudio } from '../utils/EndpointAPI';
+import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/AWSBucket';
 
 const mimeType = "audio/webm";
 
@@ -16,12 +17,22 @@ const AudioProcessing = ({onAudioRecorded, updateCart}) => {
   const [audioBuffer, setAudioBuffer] = useState(null);
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
   const [uniqueId, setUniqueId] = useState(null);
+  const gainNode = useRef(null);
 
   useEffect(() => {
     async function initMediaStream() {
       try {
         mediaStream.current = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder.current = new MediaRecorder(mediaStream.current, { type: mimeType });
+        audioContext.current = new AudioContext();
+        gainNode.current = audioContext.current.createGain();
+
+        if (isMobile || isTablet) {
+          gainNode.current.gain.value = 10; // Higher gain for mobile and tablet devices
+        } else {
+          gainNode.current.gain.value = 1; // default gain for desktop/laptop devices
+        }
+
       } catch (err) {
         console.error("Error accessing the microphone", err);
       }
@@ -39,7 +50,10 @@ const AudioProcessing = ({onAudioRecorded, updateCart}) => {
       if (audioBuffer && !hasPlayedAudio) { // Check if audio has not been played yet
         const playSound = audioContext.current.createBufferSource();
         playSound.buffer = audioBuffer;
-        playSound.connect(audioContext.current.destination);
+
+        playSound.connect(gainNode.current);
+        gainNode.current.connect(audioContext.current.destination);
+
         playSound.start(audioContext.current.currentTime);
         setHasPlayedAudio(true); // Set the flag to prevent further playback
       }
