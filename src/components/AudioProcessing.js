@@ -3,8 +3,9 @@ import '../styles/AudioRecorder.css';
 import toWav from 'audiobuffer-to-wav';
 import { isMobile, isTablet } from 'react-device-detect';
 import React, { useState, useEffect, useRef } from 'react';
-import { fetchProcessedAudio, initialFetchProcessedAudio } from '../utils/EndpointAPI';
+import { patchAudioEndpoint, postAudioEndpoint } from '../utils/EndpointAPI';
 import { uploadToS3, deleteFromS3, saveFromS3, deleteTempFile } from '../utils/AWSBucket';
+import AudioStreamer from './AudioStreamer';
 
 const mimeType = "audio/webm";
 
@@ -18,6 +19,7 @@ const AudioProcessing = ({onAudioRecorded, updateCart}) => {
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
   const [uniqueId, setUniqueId] = useState(null);
   const gainNode = useRef(null);
+  const [playbackTrigger, setPlaybackTrigger] = useState(0);
 
   useEffect(() => {
     async function initMediaStream() {
@@ -128,6 +130,10 @@ const AudioProcessing = ({onAudioRecorded, updateCart}) => {
     }
   };
 
+  const triggerPlayback = () => {
+    setPlaybackTrigger(prev => prev + 1); // Increment trigger
+  };
+
   /*
    Call backend endpoint to process audio by:
     1. download res_{unique_id} from s3
@@ -140,26 +146,30 @@ const AudioProcessing = ({onAudioRecorded, updateCart}) => {
     try {
       let response = null;
       if (!uniqueId) {
-        console.log("Fetching initial processed audio with POST request");
-        response = await initialFetchProcessedAudio(uploadFileName);
+        console.log("Fetching initial response object with POST request");
+        response = await postAudioEndpoint(uploadFileName);
         setUniqueId(response.unique_id);
       } else {
-        console.log("Fetching processed audio with PATCH request");
-        response = await fetchProcessedAudio(uploadFileName, uniqueId);
+        console.log("Fetching response object with PATCH request");
+        response = await patchAudioEndpoint(uploadFileName, uniqueId);
       }
 
       console.log("Response from backend: ", response);
 
-    if (response && response.file_path && response.json_order) {
+      if (response) {
         console.log("Got valid response from backend");
-        if (!response.json_order.human_response)
+        if (!response.file_path) {
+          console.log("No file path in response (going to stream response), updating cart");
           updateCart(response.json_order);
-        console.log("Saving res file from S3");
-        const tempFilePath = await saveFromS3(response.file_path);
-        console.log("Successfully saved res file from S3 and about to decode audio");
-        await fetchAndPlayAudio(tempFilePath);
-        await deleteTempFile(tempFilePath);
-        await deleteFromS3(response.file_path);
+          triggerPlayback();
+        } else if (response.json_order.human_response) {
+          console.log("Saving res file from S3");
+          const tempFilePath = await saveFromS3(response.file_path);
+          console.log("Successfully saved res file from S3 and about to decode audio");
+          await fetchAndPlayAudio(tempFilePath);
+          await deleteTempFile(tempFilePath);
+          await deleteFromS3(response.file_path);
+        }
       } else {
         console.log("Got invalid response from backend");
       }
@@ -200,6 +210,7 @@ const AudioProcessing = ({onAudioRecorded, updateCart}) => {
           <div className="status-indicator">
             <p>{recordingStatus ? 'Recording...' : 'Not Recording'}</p>
           </div>
+          <AudioStreamer uniqueId={uniqueId} trigger={playbackTrigger} />
         </div>
       </div>
   );
