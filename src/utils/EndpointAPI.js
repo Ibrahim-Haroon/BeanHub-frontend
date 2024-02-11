@@ -1,6 +1,6 @@
 
 
-export async function initialFetchProcessedAudio(file_path) {
+export async function postAudioEndpoint(file_path) {
     try {
         const requestData = { file_path: file_path };
         const endpoint = process.env.REACT_APP_BACKEND_ENDPOINT + '/audio_endpoint/';
@@ -31,7 +31,7 @@ export async function initialFetchProcessedAudio(file_path) {
 }
 
 
-export async function fetchProcessedAudio(file_path, unique_id) {
+export async function patchAudioEndpoint(file_path, unique_id) {
     try {
         const requestData = { file_path: file_path, unique_id: unique_id};
         const endpoint = process.env.REACT_APP_BACKEND_ENDPOINT + '/audio_endpoint/';
