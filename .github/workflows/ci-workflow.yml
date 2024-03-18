@@ -1,12 +1,12 @@
 name: frontend
 
 on:
-  push:
-  pull_request:
+  push: {}
+  pull_request: {}
 
 jobs:
   build:
-      runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
       
   test:
     runs-on: ubuntu-latest
